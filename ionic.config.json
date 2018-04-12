@@ -1,0 +1,8 @@
+{
+  "name": "ionic-maps",
+  "app_id": "09bf2440",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
