@@ -33,26 +33,15 @@ export class HomePage {
       }
  
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+      this.addMarker();
  
     }, (err) => {
       console.log(err);
     });
   }
 
-  addInfoWindow(marker, content){
- 
-    let infoWindow = new google.maps.InfoWindow({
-      content: content
-    });
-   
-    google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
-    });
-   
-  }
-
   addMarker(){
- 
     let marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
@@ -62,7 +51,16 @@ export class HomePage {
     let content = "<h4>Information!</h4>";         
    
     this.addInfoWindow(marker, content);
+  }
+
+  addInfoWindow(marker, content){
+    let infoWindow = new google.maps.InfoWindow({
+      content: content
+    });
    
+    google.maps.event.addListener(marker, 'click', () => {
+      infoWindow.open(this.map, marker);
+    });
   }
  
 }
