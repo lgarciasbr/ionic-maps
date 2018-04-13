@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, DateTime } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
  
 declare var google;
@@ -12,6 +12,7 @@ export class HomePage {
  
   @ViewChild('map') mapElement: ElementRef;
   map: any;
+  latLng: any;
  
   constructor(public navCtrl: NavController, public geolocation: Geolocation) {
  
@@ -19,15 +20,19 @@ export class HomePage {
  
   ionViewDidLoad(){
     this.loadMap();
+
+    setInterval(func => {
+      this.addMarker();
+    }, 10 * 1000);
   }
  
   loadMap(){
     this.geolocation.getCurrentPosition().then((position) => {
  
-      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
  
       let mapOptions = {
-        center: latLng,
+        center: this.latLng,
         zoom: 19,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
@@ -42,22 +47,28 @@ export class HomePage {
   }
 
   addMarker(){
+    this.geolocation.getCurrentPosition().then((position) => {
+ 
+      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+ 
+    }, (err) => {
+      console.log(err);
+    });
+
     let marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
-      position: this.map.getCenter()
+      position: this.latLng
     });
    
-    let content = "<h4>Information!</h4>";         
-   
-    this.addInfoWindow(marker, content);
-  }
+    let dateTimePosition = new Date();
 
-  addInfoWindow(marker, content){
+    let content = "<h4>" + dateTimePosition.toString() + "</h4>";  
+    
     let infoWindow = new google.maps.InfoWindow({
       content: content
     });
-   
+
     google.maps.event.addListener(marker, 'click', () => {
       infoWindow.open(this.map, marker);
     });
