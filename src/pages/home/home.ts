@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, DateTime } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
  
 declare var google;
@@ -12,10 +12,9 @@ export class HomePage {
  
   @ViewChild('map') mapElement: ElementRef;
   map: any;
-  latLng: any;
  
   constructor(public navCtrl: NavController, public geolocation: Geolocation) {
- 
+
   }
  
   ionViewDidLoad(){
@@ -27,12 +26,12 @@ export class HomePage {
   }
  
   loadMap(){
-    this.geolocation.getCurrentPosition().then((position) => {
+    this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).then((position) => {
  
-      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
  
       let mapOptions = {
-        center: this.latLng,
+        center: latLng,
         zoom: 19,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
@@ -45,22 +44,20 @@ export class HomePage {
   }
 
   addMarker(){
-    this.geolocation.getCurrentPosition().then((position) => {
+    this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }).then((position) => {
  
-      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
  
-      this.map.setCenter(this.latLng)
+      this.map.setCenter(latLng)
 
       let marker = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.DROP,
-        position: this.latLng
+        position: latLng
       });
-     
-      let dateTimePosition = new Date();
-  
-      let content = "<h4>" + dateTimePosition.toString() + "</h4>";  
       
+      let content = "<h4>" + position.coords.accuracy + "m" + "</h4>"; 
+
       let infoWindow = new google.maps.InfoWindow({
         content: content
       });
