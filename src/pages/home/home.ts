@@ -38,8 +38,6 @@ export class HomePage {
       }
  
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-      this.addMarker();
  
     }, (err) => {
       console.log(err);
@@ -51,27 +49,30 @@ export class HomePage {
  
       this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
  
+      this.map.setCenter(this.latLng)
+
+      let marker = new google.maps.Marker({
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        position: this.latLng
+      });
+     
+      let dateTimePosition = new Date();
+  
+      let content = "<h4>" + dateTimePosition.toString() + "</h4>";  
+      
+      let infoWindow = new google.maps.InfoWindow({
+        content: content
+      });
+  
+      google.maps.event.addListener(marker, 'click', () => {
+        infoWindow.open(this.map, marker);
+      });
+
     }, (err) => {
       console.log(err);
     });
 
-    let marker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: this.latLng
-    });
-   
-    let dateTimePosition = new Date();
-
-    let content = "<h4>" + dateTimePosition.toString() + "</h4>";  
-    
-    let infoWindow = new google.maps.InfoWindow({
-      content: content
-    });
-
-    google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
-    });
   }
  
 }
